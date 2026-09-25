@@ -43,12 +43,39 @@ export default function Catalog() {
   const [selectedBrand, setSelectedBrand] = useState<string>('')
   const [onlySale, setOnlySale] = useState(false)
   const [sortOption, setSortOption] = useState('newest')
-  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined)
+  const [maxPrice, setMaxPrice] = useState<number>(2000)
+  const [minPriceBound, setMinPriceBound] = useState<number>(29)
+  const [maxPriceBound, setMaxPriceBound] = useState<number>(2000)
 
   const currentCategoryData = categories.find((c) => c.name === activeCategory)
 
   useEffect(() => {
     getCategories().then(setCategories)
+  }, [])
+
+  // Discover actual price range in catalog to adjust slider dynamically while respecting 2000 limit
+  useEffect(() => {
+    let isMounted = true
+    const checkPriceBounds = async () => {
+      try {
+        const [cheapest, priciest] = await Promise.all([
+          getProducts({ sort: 'price_asc', perPage: 1 }),
+          getProducts({ sort: 'price_desc', perPage: 1 }),
+        ])
+        if (isMounted) {
+          const minP = cheapest.items[0]?.price ? Math.floor(cheapest.items[0].price) : 29
+          const maxP = priciest.items[0]?.price ? Math.ceil(priciest.items[0].price) : 2000
+          setMinPriceBound(Math.min(minP, 30))
+          setMaxPriceBound(Math.max(maxP, 2000))
+        }
+      } catch (e) {
+        console.error('Error fetching price bounds:', e)
+      }
+    }
+    checkPriceBounds()
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   useEffect(() => {
@@ -66,7 +93,7 @@ export default function Catalog() {
         brand: selectedBrand || undefined,
         isOnSale: onlySale || undefined,
         sort: sortOption,
-        maxPrice: maxPrice || undefined,
+        maxPrice: maxPrice < maxPriceBound ? maxPrice : undefined,
         page: pageNum,
         perPage: 12,
       })
@@ -98,9 +125,11 @@ export default function Catalog() {
   const clearFilters = () => {
     setSelectedBrand('')
     setOnlySale(false)
-    setMaxPrice(undefined)
+    setMaxPrice(maxPriceBound)
     setSortOption('newest')
   }
+
+  const isPriceFiltered = maxPrice < maxPriceBound
 
   const FilterContent = () => (
     <div className="space-y-6 text-xs">
@@ -155,26 +184,38 @@ export default function Catalog() {
 
       {/* Faixa de Preço */}
       <div className="space-y-2 border-b border-neutral-100 pb-5">
-        <h4 className="font-bold text-neutral-950 uppercase tracking-widest text-[11px]">
-          Preço Máximo
-        </h4>
+        <div className="flex items-center justify-between">
+          <h4 className="font-bold text-neutral-950 uppercase tracking-widest text-[11px]">
+            Preço Máximo
+          </h4>
+          {isPriceFiltered && (
+            <button
+              onClick={() => setMaxPrice(maxPriceBound)}
+              className="text-[10px] text-neutral-400 hover:text-neutral-900 underline"
+            >
+              Resetar
+            </button>
+          )}
+        </div>
         <input
           type="range"
-          min="40"
-          max="350"
-          step="10"
-          value={maxPrice || 350}
+          min={minPriceBound}
+          max={maxPriceBound}
+          step="20"
+          value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full accent-neutral-950"
+          className="w-full accent-neutral-950 cursor-pointer"
         />
         <div className="flex justify-between text-[11px] text-neutral-500 font-medium">
-          <span>R$ 40</span>
-          <span className="font-semibold text-neutral-900">Até R$ {maxPrice || 350}</span>
+          <span>R$ {minPriceBound}</span>
+          <span className="font-semibold text-neutral-900">
+            {maxPrice >= maxPriceBound ? `Até R$ ${maxPriceBound}` : `Até R$ ${maxPrice}`}
+          </span>
         </div>
       </div>
 
       {/* Limpar Filtros */}
-      {(selectedBrand || onlySale || maxPrice) && (
+      {(selectedBrand || onlySale || isPriceFiltered) && (
         <Button
           onClick={clearFilters}
           variant="outline"
