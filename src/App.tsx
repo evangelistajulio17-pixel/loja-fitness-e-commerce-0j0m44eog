@@ -27,7 +27,8 @@ const isStaticOrFile =
     window.location.port === '5500' ||
     window.location.port === '5501' ||
     window.location.port === '5502' ||
-    window.location.pathname.includes('/dist/'))
+    window.location.pathname.includes('/dist/') ||
+    window.location.pathname.includes('loja-fitness-local'))
 
 const RouterComponent = isStaticOrFile ? HashRouter : BrowserRouter
 

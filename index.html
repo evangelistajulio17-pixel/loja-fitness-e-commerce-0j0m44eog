@@ -10,12 +10,34 @@
     <meta name="author" content="FitWear Store Brasil" />
     <meta property="og:image" content="./og-image.png" />
     <script>
-      /* Suporte a carregamento relativo em servidores estáticos locais (ex: Live Server http://127.0.0.1:5500/dist/ ou http://127.0.0.1:5500/index.html) */
+      /* Suporte a carregamento relativo em servidores estáticos locais (ex: Live Server http://127.0.0.1:5500/dist/) e em arquivo local file:// */
       (function() {
-        if (!document.querySelector('base')) {
+        if (window.location.protocol === 'file:') {
+          // No protocolo file://, <base href="./"> causa problemas de resolução de hash e rotas em alguns navegadores
+          var existingBase = document.querySelector('base');
+          if (existingBase) {
+            existingBase.remove();
+          }
+        } else if (!document.querySelector('base')) {
           var baseTag = document.createElement('base');
           baseTag.href = './';
           document.head.insertBefore(baseTag, document.head.firstChild);
+        }
+      })();
+    </script>
+    <script>
+      /* Detecção amigável caso o usuário abra a pasta fonte não compilada diretamente via file:// */
+      (function() {
+        if (window.location.protocol === 'file:') {
+          window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+              var root = document.getElementById('root');
+              if (root && (!root.children || root.children.length === 0)) {
+                // Se a página estiver totalmente em branco após o carregamento
+                console.warn('Abertura via file:// detectada. Se a tela estiver em branco, use a versão compilada loja-fitness-local.html gerada por npm run build:local.');
+              }
+            }, 2500);
+          });
         }
       })();
     </script>
