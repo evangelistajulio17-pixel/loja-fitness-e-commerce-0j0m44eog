@@ -604,7 +604,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       {/* 4. FOOTER EDITORIAL CLEAN & SOFISTICADO */}
       <footer className="bg-white border-t border-neutral-200 text-neutral-600 pt-16 pb-12 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-neutral-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-200">
             {/* Coluna 1: Marca & Manifesto Clean */}
             <div className="lg:col-span-2 space-y-4">
               <div className="space-y-1">
@@ -696,27 +696,6 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
                 <li className="text-neutral-400">Segunda a Sexta: 09h às 18h</li>
                 <li className="text-neutral-400">contato@fitwear.com.br</li>
               </ul>
-            </div>
-
-            {/* Coluna 4: Pagamentos & Segurança */}
-            <div className="space-y-3">
-              <h4 className="text-[11px] font-bold text-neutral-950 uppercase tracking-widest">
-                Pagamento no Site
-              </h4>
-              <p className="text-xs text-neutral-500">
-                Pagamento seguro processado diretamente na finalização da compra:
-              </p>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <span className="px-2.5 py-1 bg-neutral-100 text-neutral-800 text-[11px] font-medium rounded-sm">
-                  Pix com Aprovação Imediata
-                </span>
-                <span className="px-2.5 py-1 bg-neutral-100 text-neutral-800 text-[11px] font-medium rounded-sm">
-                  Cartão em até 12x
-                </span>
-                <span className="px-2.5 py-1 bg-neutral-100 text-neutral-800 text-[11px] font-medium rounded-sm">
-                  Boleto Bancário
-                </span>
-              </div>
             </div>
           </div>
 
