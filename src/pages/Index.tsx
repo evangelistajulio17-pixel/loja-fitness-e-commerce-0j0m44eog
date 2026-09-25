@@ -1,55 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  ArrowRight,
-  ShieldCheck,
-  Truck,
-  RotateCcw,
-  Zap,
-  Tag,
-  Star,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Award,
-} from 'lucide-react'
+import { ArrowRight, Truck, RotateCcw, CreditCard, ShieldCheck, Check } from 'lucide-react'
 import { getProducts, getCategories } from '@/services/products'
 import type { Product, Category } from '@/types'
 import { ProductCard } from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 
 const HERO_SLIDES = [
   {
-    tag: 'COLEÇÃO OFICIAL 2025',
-    title: 'VISTA-SE PARA VENCER.',
+    tag: 'NOVA COLEÇÃO',
+    title: 'Alta Performance com Design Essencial',
     subtitle:
-      'Roupas fitness inteligentes com tecnologia Dry-Fit, zero transparência e compressão muscular graduada.',
-    cta: 'Explorar Catálogo',
-    link: '/categoria/camisetas',
-    bgGradient: 'from-slate-950 via-slate-900 to-emerald-950',
-    accentText: 'Tecnologia que Respira com Você',
+      'Modelagens precisas em poliamida e tecidos dry-fit de alta densidade. Zero transparência no agachamento e respirabilidade contínua.',
+    cta: 'Explorar Coleção',
+    link: '/categoria/todas',
+    image:
+      'https://img.usecurling.com/p/1600/900?q=fitness%20woman%20activewear%20clean%20minimalist&seed=hero1',
   },
   {
-    tag: 'QUEIMA DE ESTOQUE FITNESS',
-    title: 'ATÉ 50% OFF EM PRODUTOS SELECIONADOS.',
+    tag: 'LINHA POWER COMPRESSÃO',
+    title: 'Leggings e Shorts que Acompanham seu Ritmo',
     subtitle:
-      'Mais de 100 itens autênticos de grandes marcas como Growth, Darkness, Live!, Morrison e Calf Expert.',
-    cta: 'Ver Ofertas do Dia',
-    link: '/promocoes',
-    bgGradient: 'from-emerald-950 via-slate-900 to-slate-950',
-    accentText: 'Preços Verificados em Tempo Real',
-  },
-  {
-    tag: 'ZERO TRANSPARÊNCIA COMPROVADA',
-    title: 'LEGGINGS & BERMUDAS DE ALTA DENSIDADE.',
-    subtitle:
-      'Segurança absoluta para o seu agachamento livre. Tecidos blackout testados em condições extremas de luz.',
-    cta: 'Conhecer Linha Power',
+      'Cós anatômico de sustentação firme sem enrolar. Conforto térmico comprovado para treinos de hipertrofia e corrida.',
+    cta: 'Ver Leggings',
     link: '/categoria/leggings',
-    bgGradient: 'from-slate-900 via-emerald-950 to-slate-950',
-    accentText: 'Máxima Performance e Conforto',
+    image:
+      'https://img.usecurling.com/p/1600/900?q=workout%20apparel%20editorial%20minimalist&seed=hero2',
+  },
+  {
+    tag: 'MASCULINO & FEMININO',
+    title: 'Camisetas e Regatas com Toque de Seda',
+    subtitle:
+      'Secagem ultrarrápida com corte atlético limpo, dos dias mais quentes às sessões intensas na academia.',
+    cta: 'Ver Camisetas',
+    link: '/categoria/camisetas',
+    image:
+      'https://img.usecurling.com/p/1600/900?q=athlete%20training%20gym%20apparel%20clean&seed=hero3',
   },
 ]
 
@@ -61,7 +47,6 @@ export default function Index() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  // Newsletter email state
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false)
 
@@ -89,11 +74,10 @@ export default function Index() {
     loadData()
   }, [])
 
-  // Auto carousel slide
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length)
-    }, 6000)
+    }, 6500)
     return () => clearInterval(timer)
   }, [])
 
@@ -108,72 +92,55 @@ export default function Index() {
   const currentSlide = HERO_SLIDES[activeSlide]
 
   return (
-    <div className="space-y-16 pb-20">
-      {/* 1. HERO CAROUSEL */}
-      <section className="relative overflow-hidden bg-slate-950 min-h-[520px] lg:min-h-[580px] flex items-center">
-        {/* Background glow and subtle mesh */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-r ${currentSlide.bgGradient} transition-all duration-1000 opacity-95`}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.15),transparent_50%)]" />
+    <div className="space-y-20 lg:space-y-24 pb-24">
+      {/* 1. HERO EDITORIAL CLEAN (inspirado em Fit e Muv Fit) */}
+      <section className="relative w-full overflow-hidden bg-neutral-900 text-white min-h-[540px] sm:min-h-[620px] lg:min-h-[680px] flex items-center">
+        {/* Background image com overlay suave */}
+        <div className="absolute inset-0">
+          <img
+            src={currentSlide.image}
+            alt={currentSlide.title}
+            className="w-full h-full object-cover object-center brightness-75 transition-opacity duration-1000 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/80 via-neutral-950/40 to-transparent" />
+        </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
-          <div className="max-w-2xl space-y-6 animate-in fade-in slide-in-from-left-6 duration-700">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold tracking-wider uppercase">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{currentSlide.tag}</span>
-            </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+          <div className="max-w-xl space-y-6">
+            <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-neutral-300 block">
+              {currentSlide.tag}
+            </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight font-serif leading-[1.08]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-0.03em] text-white leading-[1.08]">
               {currentSlide.title}
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl font-normal">
+            <p className="text-xs sm:text-sm text-neutral-200/90 leading-relaxed font-normal max-w-lg">
               {currentSlide.subtitle}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="pt-2 flex items-center gap-4">
               <Link to={currentSlide.link}>
                 <Button
                   size="lg"
-                  className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-sm px-8 h-12 rounded-xl shadow-lg shadow-emerald-500/25 flex items-center gap-2 group transition-all"
+                  className="bg-white hover:bg-neutral-100 text-neutral-950 font-semibold text-xs uppercase tracking-wider px-8 h-12 rounded-none transition-all"
                 >
                   <span>{currentSlide.cta}</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Link to="/promocoes">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-white border-slate-700 hover:bg-slate-800 hover:text-white font-bold text-sm px-6 h-12 rounded-xl"
-                >
-                  Ver Cupons Ativos
-                </Button>
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-6 pt-4 text-xs text-slate-400 font-semibold border-t border-slate-800/80">
-              <div className="flex items-center gap-1.5 text-emerald-400">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>100% Roupas & Acessórios (Sem Tênis)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Pagamento Direto no Site</span>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Carousel slide indicators */}
-        <div className="absolute bottom-6 right-8 flex items-center gap-2 z-10">
+        {/* Indicadores de Slide Clean */}
+        <div className="absolute bottom-8 right-8 flex items-center gap-2 z-10">
           {HERO_SLIDES.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setActiveSlide(idx)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                activeSlide === idx ? 'w-8 bg-emerald-500' : 'w-2 bg-slate-600 hover:bg-slate-400'
+              className={`h-[3px] transition-all duration-300 ${
+                activeSlide === idx ? 'w-8 bg-white' : 'w-3 bg-white/40 hover:bg-white/70'
               }`}
               aria-label={`Slide ${idx + 1}`}
             />
@@ -181,87 +148,89 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 2. BARRA DE VANTAGENS OFICIAIS */}
+      {/* 2. BARRA DE BENEFÍCIOS MINIMALISTA (Estilo Muv Fit / FitLoja) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-3.5 p-2">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <Truck className="w-6 h-6 stroke-[1.75]" />
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y border-neutral-200/80">
+          <div className="flex items-center gap-3.5">
+            <CreditCard className="w-5 h-5 text-neutral-800 stroke-[1.5] shrink-0" />
             <div>
-              <h4 className="text-xs font-bold text-slate-900">Frete Grátis Brasil</h4>
-              <p className="text-[11px] text-slate-500">Em compras a partir de R$ 299</p>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-950">
+                Até 12x Sem Juros
+              </h4>
+              <p className="text-[11px] text-neutral-500">Parcele no cartão de crédito</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-2">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <Zap className="w-6 h-6 stroke-[1.75]" />
-            </div>
+          <div className="flex items-center gap-3.5">
+            <Truck className="w-5 h-5 text-neutral-800 stroke-[1.5] shrink-0" />
             <div>
-              <h4 className="text-xs font-bold text-slate-900">Pagamento no Site</h4>
-              <p className="text-[11px] text-slate-500">Pix com aprovação imediata</p>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-950">
+                Frete Grátis
+              </h4>
+              <p className="text-[11px] text-neutral-500">Para compras acima de R$ 299</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-2">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <RotateCcw className="w-6 h-6 stroke-[1.75]" />
-            </div>
+          <div className="flex items-center gap-3.5">
+            <RotateCcw className="w-5 h-5 text-neutral-800 stroke-[1.5] shrink-0" />
             <div>
-              <h4 className="text-xs font-bold text-slate-900">Troca Fácil 30 Dias</h4>
-              <p className="text-[11px] text-slate-500">Primeira troca 100% gratuita</p>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-950">
+                Primeira Troca Grátis
+              </h4>
+              <p className="text-[11px] text-neutral-500">Em até 30 dias após receber</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-2">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-              <Award className="w-6 h-6 stroke-[1.75]" />
-            </div>
+          <div className="flex items-center gap-3.5">
+            <ShieldCheck className="w-5 h-5 text-neutral-800 stroke-[1.5] shrink-0" />
             <div>
-              <h4 className="text-xs font-bold text-slate-900">Preços Verificados</h4>
-              <p className="text-[11px] text-slate-500">Transparência com fontes reais</p>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-950">
+                Compra 100% Segura
+              </h4>
+              <p className="text-[11px] text-neutral-500">Pagamento direto na loja</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. CATEGORIAS EM DESTAQUE (CARDS COM FOTOS) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
+      {/* 3. CATEGORIAS COM FOTOS E TIPOGRAFIA MINIMALISTA */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex items-end justify-between border-b border-neutral-200/70 pb-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-              Navegue por Categoria
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400 block mb-1">
+              Guarda-Roupa Esportivo
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 font-serif tracking-tight mt-1">
-              Guarda-Roupa Esportivo Completo
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 uppercase">
+              Compre por Categoria
             </h2>
           </div>
           <Link
-            to="/categoria/camisetas"
-            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+            to="/categoria/todas"
+            className="text-xs font-medium text-neutral-600 hover:text-neutral-950 transition-colors uppercase tracking-wider flex items-center gap-1"
           >
-            Ver todas <ArrowRight className="w-3.5 h-3.5" />
+            Ver Todas <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               to={`/categoria/${cat.name}`}
-              className="group relative flex flex-col items-center bg-white rounded-2xl border border-slate-200 p-3 hover:border-emerald-500 hover:shadow-md transition-all text-center"
+              className="group flex flex-col items-center text-center space-y-2.5"
             >
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 mb-2.5 shrink-0 border border-slate-100 group-hover:scale-105 transition-transform">
+              <div className="relative aspect-square w-full overflow-hidden bg-neutral-100 rounded-none border border-neutral-200/60">
                 <img
                   src={
-                    cat.image_url || `https://img.usecurling.com/p/200/200?q=${cat.name}%20fitness`
+                    cat.image_url ||
+                    `https://img.usecurling.com/p/300/300?q=${cat.name}%20fitness%20clean`
                   }
                   alt={cat.display_name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
                 />
               </div>
-              <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-800 group-hover:text-neutral-950 transition-colors">
                 {cat.display_name}
               </span>
             </Link>
@@ -269,38 +238,37 @@ export default function Index() {
         </div>
       </section>
 
-      {/* 4. PRODUTOS EM DESTAQUE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
+      {/* 4. PRODUTOS EM DESTAQUE (Grid Arejado, White Space Abundante) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex items-end justify-between border-b border-neutral-200/70 pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-amber-500 text-slate-950 font-bold text-[10px]">
-                Mais Procurados
-              </Badge>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Seleção Especial
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 font-serif tracking-tight mt-1">
-              Produtos em Destaque
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400 block mb-1">
+              Curadoria Especial
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 uppercase">
+              Mais Vendidos da Coleção
             </h2>
           </div>
           <Link
             to="/categoria/todas"
-            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+            className="text-xs font-medium text-neutral-600 hover:text-neutral-950 transition-colors uppercase tracking-wider flex items-center gap-1"
           >
-            Explorar catálogo completo <ArrowRight className="w-3.5 h-3.5" />
+            Ver Coleção Completa <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-slate-200 animate-pulse rounded-2xl" />
+              <div key={i} className="space-y-3">
+                <div className="aspect-[3/4] bg-neutral-200/60 animate-pulse" />
+                <div className="h-4 bg-neutral-200/60 animate-pulse w-3/4" />
+                <div className="h-4 bg-neutral-200/60 animate-pulse w-1/3" />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -308,130 +276,124 @@ export default function Index() {
         )}
       </section>
 
-      {/* 5. BANNER PROMOCIONAL VIBRANTE */}
+      {/* 5. BANNER EDITORIAL CLEAN (Substitui o antigo gradiente berrante) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-700 p-8 sm:p-12 text-white shadow-xl shadow-emerald-600/10">
-          <div className="relative z-10 max-w-xl space-y-4">
-            <Badge className="bg-white text-emerald-700 font-extrabold text-xs px-3 py-1">
-              CUPOM EXCLUSIVO
-            </Badge>
-            <h3 className="text-3xl sm:text-4xl font-black font-serif tracking-tight leading-tight">
-              GANHE 10% OFF EXTRA NA PRIMEIRA COMPRA
+        <div className="relative overflow-hidden bg-neutral-950 text-white p-8 sm:p-14 lg:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-lg space-y-4 text-left">
+            <span className="text-[10px] uppercase tracking-[0.24em] font-semibold text-neutral-400 block">
+              Benefício Exclusivo
+            </span>
+            <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight uppercase leading-tight">
+              10% OFF na Primeira Compra
             </h3>
-            <p className="text-xs sm:text-sm text-emerald-50 leading-relaxed font-normal">
-              Utilize o código promocional{' '}
-              <span className="font-black bg-emerald-900/40 px-2 py-0.5 rounded text-white tracking-wider border border-white/20">
-                FITNESS10
-              </span>{' '}
-              no checkout para garantir desconto automático no subtotal da sua sacola.
+            <p className="text-xs sm:text-sm text-neutral-300 font-normal leading-relaxed">
+              Use o código promocional{' '}
+              <strong className="text-white underline font-semibold">FITNESS10</strong> no checkout
+              e garanta desconto automático em qualquer peça da loja.
             </p>
-            <div className="pt-2">
-              <Link to="/promocoes">
-                <Button className="bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs h-11 px-6 rounded-xl shadow-md">
-                  Ver Todas as Ofertas e Cupons
-                </Button>
-              </Link>
-            </div>
+          </div>
+
+          <div className="shrink-0">
+            <Link to="/promocoes">
+              <Button className="bg-white hover:bg-neutral-100 text-neutral-950 font-semibold text-xs uppercase tracking-wider px-8 h-12 rounded-none transition-all">
+                Ver Cupons & Ofertas
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 6. LANÇAMENTOS E MAIS RECENTES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
+      {/* 6. LANÇAMENTOS E NOVIDADES */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex items-end justify-between border-b border-neutral-200/70 pb-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-              Novidades da Semana
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400 block mb-1">
+              Lançamentos
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 font-serif tracking-tight mt-1">
-              Lançamentos de Performance
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 uppercase">
+              Novidades em Performance
             </h2>
           </div>
           <Link
             to="/categoria/todas"
-            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+            className="text-xs font-medium text-neutral-600 hover:text-neutral-950 transition-colors uppercase tracking-wider flex items-center gap-1"
           >
-            Ver todas novidades <ArrowRight className="w-3.5 h-3.5" />
+            Ver Novidades <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
           {newestProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-      {/* 7. PROMOÇÕES COM COMPARAÇÃO DE PREÇOS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
+      {/* 7. OFERTAS & PROMOÇÕES */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex items-end justify-between border-b border-neutral-200/70 pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-rose-600 text-white font-bold text-[10px]">Preço Baixo</Badge>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Compre e Economize
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950 font-serif tracking-tight mt-1">
-              Ofertas Imperdíveis
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-rose-600 block mb-1">
+              Descontos Especiais
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 uppercase">
+              Peças Selecionadas com Até 50% OFF
             </h2>
           </div>
           <Link
             to="/promocoes"
-            className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1"
+            className="text-xs font-medium text-rose-600 hover:text-rose-700 transition-colors uppercase tracking-wider flex items-center gap-1"
           >
-            Ver página de promoções <ArrowRight className="w-3.5 h-3.5" />
+            Ver Todas as Ofertas <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
           {saleProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-      {/* 8. NEWSLETTER VIP */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 rounded-3xl p-8 sm:p-12 text-center text-white space-y-4 border border-slate-800">
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">
-            Comunidade FitWear VIP
-          </span>
-          <h3 className="text-2xl sm:text-3xl font-black font-serif">
-            Receba Cupons Exclusivos e Alertas de Promoção
-          </h3>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-            Cadastre seu e-mail para receber descontos relâmpago e lançamentos das principais marcas
-            fitness antes de todo mundo.
-          </p>
+      {/* 8. NEWSLETTER MINIMALISTA */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 pt-10">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-400 block">
+          Newsletter
+        </span>
+        <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-950 uppercase">
+          Fique por Dentro dos Lançamentos
+        </h3>
+        <p className="text-xs text-neutral-500 max-w-md mx-auto leading-relaxed">
+          Assine para receber convites antecipados de novas coleções, cupons de desconto e
+          reposições de estoque.
+        </p>
 
-          {newsletterSubscribed ? (
-            <div className="p-4 rounded-xl bg-emerald-950/80 border border-emerald-500 text-emerald-300 text-xs font-bold max-w-md mx-auto flex items-center justify-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Inscrição confirmada! Use o cupom BEMVINDO15 na sua compra.</span>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleNewsletter}
-              className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto pt-2"
+        {newsletterSubscribed ? (
+          <div className="p-4 bg-neutral-100 text-neutral-900 text-xs font-medium max-w-md mx-auto flex items-center justify-center gap-2">
+            <Check className="w-4 h-4 text-emerald-600" />
+            <span>Obrigado por se inscrever! Use o cupom BEMVINDO15 na sua próxima compra.</span>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleNewsletter}
+            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto pt-3"
+          >
+            <input
+              type="email"
+              required
+              placeholder="Digite seu e-mail..."
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              className="flex-1 px-4 py-3 bg-white border border-neutral-300 text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-neutral-950"
+            />
+            <Button
+              type="submit"
+              className="bg-neutral-950 hover:bg-neutral-900 text-white font-semibold px-6 h-11 text-xs uppercase tracking-wider rounded-none"
             >
-              <input
-                type="email"
-                required
-                placeholder="Seu melhor e-mail..."
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
-              />
-              <Button
-                type="submit"
-                className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-6 h-12 rounded-xl text-xs"
-              >
-                Cadastrar
-              </Button>
-            </form>
-          )}
-        </div>
+              Inscrever
+            </Button>
+          </form>
+        )}
       </section>
     </div>
   )

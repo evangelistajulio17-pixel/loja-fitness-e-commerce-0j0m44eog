@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Flame, Clock, Copy, Check, Percent, Sparkles, Tag } from 'lucide-react'
+import { Clock, Copy, Check, Tag } from 'lucide-react'
 import { getProducts, getCoupons } from '@/services/products'
 import type { Product, Coupon } from '@/types'
 import { ProductCard } from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { toast } from '@/hooks/use-toast'
 
 export default function PromotionsPage() {
@@ -14,12 +12,11 @@ export default function PromotionsPage() {
   const [loading, setLoading] = useState(true)
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
-  // Countdown timer state (Mock: 5 days, 14 hours, 28 mins)
   const [timeLeft, setTimeLeft] = useState({
-    days: 5,
-    hours: 14,
-    minutes: 28,
-    seconds: 45,
+    days: 4,
+    hours: 18,
+    minutes: 32,
+    seconds: 10,
   })
 
   useEffect(() => {
@@ -60,116 +57,103 @@ export default function PromotionsPage() {
     setCopiedCode(code)
     toast({
       title: 'Cupom copiado!',
-      description: `Código "${code}" copiado para a área de transferência. Cole no checkout.`,
+      description: `Código "${code}" copiado para a área de transferência.`,
     })
     setTimeout(() => setCopiedCode(null), 3000)
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-      {/* Banner de Campanha com Contador Regressivo */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-950 via-slate-900 to-slate-950 p-8 sm:p-12 text-white border border-rose-900/40 shadow-xl">
-        <div className="relative z-10 max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-400 text-xs font-black tracking-wider uppercase">
-            <Flame className="w-4 h-4 fill-rose-500 text-rose-500" />
-            <span>MEGA QUEIMA OFICIAL DE TEMPORADA</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-black font-serif tracking-tight text-white leading-tight">
-            OFERTAS IMPERDÍVEIS & ATÉ 50% OFF
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+      {/* Header Editorial de Promoção (Clean & Sofisticado) */}
+      <div className="border-b border-neutral-200/80 pb-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+        <div className="space-y-2 max-w-xl">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-rose-600 block">
+            Ofertas Especiais
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 uppercase leading-none">
+            Sale & Descontos
           </h1>
-
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
-            Aproveite os descontos verificados em vestuário esportivo e acessórios. Economia real
-            comparada diretamente às lojas de origem.
+          <p className="text-xs sm:text-sm text-neutral-500 font-normal leading-relaxed">
+            Peças selecionadas com até 50% OFF. Qualidade esportiva com preços especiais por tempo
+            limitado.
           </p>
+        </div>
 
-          {/* Contador Regressivo Estilizado */}
-          <div className="pt-2">
-            <div className="flex items-center gap-1.5 text-xs text-rose-400 font-bold mb-2">
-              <Clock className="w-4 h-4" />
-              <span>A OFERTA ENCERRA EM:</span>
+        {/* Cronômetro Minimalista */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium uppercase tracking-wider mr-2">
+            <Clock className="w-4 h-4 stroke-[1.5]" />
+            <span className="hidden sm:inline">Termina em:</span>
+          </div>
+          <div className="flex items-center gap-2 text-center">
+            <div className="px-3 py-1.5 bg-white border border-neutral-200">
+              <span className="block text-sm font-bold text-neutral-950">{timeLeft.days}d</span>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="bg-slate-900/90 border border-rose-900/60 rounded-xl px-3 sm:px-4 py-2 text-center min-w-[60px]">
-                <span className="block text-xl sm:text-2xl font-black text-white">
-                  {timeLeft.days}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-slate-400">Dias</span>
-              </div>
-              <span className="text-rose-500 font-black text-xl">:</span>
-              <div className="bg-slate-900/90 border border-rose-900/60 rounded-xl px-3 sm:px-4 py-2 text-center min-w-[60px]">
-                <span className="block text-xl sm:text-2xl font-black text-white">
-                  {String(timeLeft.hours).padStart(2, '0')}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-slate-400">Horas</span>
-              </div>
-              <span className="text-rose-500 font-black text-xl">:</span>
-              <div className="bg-slate-900/90 border border-rose-900/60 rounded-xl px-3 sm:px-4 py-2 text-center min-w-[60px]">
-                <span className="block text-xl sm:text-2xl font-black text-white">
-                  {String(timeLeft.minutes).padStart(2, '0')}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-slate-400">Min</span>
-              </div>
-              <span className="text-rose-500 font-black text-xl">:</span>
-              <div className="bg-slate-900/90 border border-rose-900/60 rounded-xl px-3 sm:px-4 py-2 text-center min-w-[60px]">
-                <span className="block text-xl sm:text-2xl font-black text-rose-400">
-                  {String(timeLeft.seconds).padStart(2, '0')}
-                </span>
-                <span className="text-[10px] uppercase font-bold text-slate-400">Seg</span>
-              </div>
+            <span className="text-neutral-400 font-bold">:</span>
+            <div className="px-3 py-1.5 bg-white border border-neutral-200">
+              <span className="block text-sm font-bold text-neutral-950">
+                {String(timeLeft.hours).padStart(2, '0')}h
+              </span>
+            </div>
+            <span className="text-neutral-400 font-bold">:</span>
+            <div className="px-3 py-1.5 bg-white border border-neutral-200">
+              <span className="block text-sm font-bold text-neutral-950">
+                {String(timeLeft.minutes).padStart(2, '0')}m
+              </span>
+            </div>
+            <span className="text-neutral-400 font-bold">:</span>
+            <div className="px-3 py-1.5 bg-white border border-neutral-200">
+              <span className="block text-sm font-bold text-rose-600">
+                {String(timeLeft.seconds).padStart(2, '0')}s
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Cards de Cupons Ativos */}
+      {/* Cupons Ativos Clean */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Tag className="w-5 h-5 text-emerald-600" />
-          <h2 className="text-xl sm:text-2xl font-black text-slate-950 font-serif">
-            Cupons Oficiais Ativos
-          </h2>
-        </div>
-        <p className="text-xs text-slate-500">
-          Clique no cupom para copiar o código e aplique na etapa final do carrinho ou checkout.
-        </p>
+        <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-950 flex items-center gap-2">
+          <Tag className="w-3.5 h-3.5" />
+          Cupons Válidos para Usar no Checkout
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {coupons.map((coupon) => (
             <div
               key={coupon.id}
-              className="bg-white rounded-2xl border-2 border-dashed border-emerald-500/40 p-5 shadow-sm flex flex-col justify-between space-y-4 relative overflow-hidden"
+              className="bg-white border border-neutral-200 p-5 flex flex-col justify-between space-y-3"
             >
-              <div className="space-y-1">
+              <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-black text-emerald-600 font-serif">
+                  <span className="text-xl font-extrabold text-neutral-950 tracking-tight">
                     {coupon.discount_percent}% OFF
                   </span>
-                  <Badge className="bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400">
                     Ativo
-                  </Badge>
+                  </span>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900">{coupon.description}</h4>
+                <p className="text-xs text-neutral-500 mt-1">{coupon.description}</p>
               </div>
 
-              <div className="pt-2 flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                <span className="font-mono font-black text-sm text-slate-800 tracking-wider">
+              <div className="pt-2 flex items-center justify-between border-t border-neutral-100">
+                <span className="font-mono font-bold text-xs text-neutral-900 tracking-wider">
                   {coupon.code}
                 </span>
                 <Button
                   size="sm"
                   onClick={() => copyCoupon(coupon.code)}
-                  className="h-8 px-3 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1.5"
+                  variant="outline"
+                  className="h-8 px-3 text-xs uppercase tracking-wider font-semibold rounded-none border-neutral-300 hover:bg-neutral-50 flex items-center gap-1.5"
                 >
                   {copiedCode === coupon.code ? (
                     <>
-                      <Check className="w-3.5 h-3.5" />
+                      <Check className="w-3 h-3 text-emerald-600" />
                       <span>Copiado</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-3 h-3" />
                       <span>Copiar</span>
                     </>
                   )}
@@ -180,23 +164,26 @@ export default function PromotionsPage() {
         </div>
       </div>
 
-      {/* Grade de Produtos em Promoção */}
-      <div className="space-y-6 pt-4">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <h2 className="text-xl sm:text-2xl font-black text-slate-950 font-serif">
-            Produtos em Oferta ({saleProducts.length})
+      {/* Grade de Produtos em Oferta */}
+      <div className="space-y-8 pt-4">
+        <div className="flex items-center justify-between border-b border-neutral-200/70 pb-3">
+          <h2 className="text-base font-bold uppercase tracking-tight text-neutral-950">
+            Produtos em Promoção ({saleProducts.length})
           </h2>
-          <span className="text-xs text-slate-400 font-semibold">Preços reduzidos</span>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-slate-200 animate-pulse rounded-2xl" />
+              <div key={i} className="space-y-3">
+                <div className="aspect-[3/4] bg-neutral-200/60 animate-pulse" />
+                <div className="h-4 bg-neutral-200/60 animate-pulse w-3/4" />
+                <div className="h-4 bg-neutral-200/60 animate-pulse w-1/3" />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {saleProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

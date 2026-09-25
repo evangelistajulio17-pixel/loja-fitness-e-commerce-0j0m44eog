@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Heart, ShoppingBag, Star, ExternalLink, ArrowRight } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
 import { useCart } from '@/context/AppContext'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 
 interface ProductCardProps {
   product: Product
@@ -16,7 +14,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const defaultImg =
     product.images_urls?.[0] ||
-    `https://img.usecurling.com/p/500/500?q=${encodeURIComponent(product.category + ' fitness apparel')}&seed=${product.slug}`
+    `https://img.usecurling.com/p/500/650?q=${encodeURIComponent(product.category + ' fitness apparel')}&seed=${product.slug}`
 
   const discountPercent =
     product.compare_at_price && product.compare_at_price > product.price
@@ -39,126 +37,107 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     toggleFavorite(product.id)
   }
 
+  // Pix value with 5% discount (clean e-commerce Brazilian practice)
+  const pixPrice = product.price * 0.95
+
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-slate-300 transition-all duration-300 transform hover:-translate-y-1">
-      {/* Imagem do Produto com Badge e Favorito */}
-      <Link
-        to={`/produto/${product.slug}`}
-        className="relative block aspect-square overflow-hidden bg-slate-100"
-      >
-        <img
-          src={defaultImg}
-          alt={product.name}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-          loading="lazy"
-        />
+    <div className="group relative flex flex-col bg-transparent text-left transition-all">
+      {/* Container de Imagem Vertical (estilo proporção 3:4 / editorial como FitLoja / Muv Fit) */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 rounded-none">
+        <Link to={`/produto/${product.slug}`} className="block w-full h-full">
+          <img
+            src={defaultImg}
+            alt={product.name}
+            className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            loading="lazy"
+          />
+        </Link>
 
-        {/* Overlay escuro sutil no hover */}
-        <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/5 transition-colors" />
-
-        {/* Badges no topo esquerdo */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start z-10">
+        {/* Badges sutis e minimalistas */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start pointer-events-none z-10">
           {discountPercent && discountPercent > 0 && (
-            <Badge className="bg-rose-600 hover:bg-rose-700 text-white font-black text-[10px] px-2 py-0.5 rounded-full shadow-sm">
-              -{discountPercent}% OFF
-            </Badge>
+            <span className="bg-neutral-950 text-white text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5">
+              -{discountPercent}%
+            </span>
           )}
-          {product.is_featured && (
-            <Badge className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-full shadow-sm">
-              Destaque
-            </Badge>
+          {product.is_featured && !discountPercent && (
+            <span className="bg-white/95 text-neutral-900 text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 shadow-xs">
+              Novo
+            </span>
           )}
         </div>
 
-        {/* Botão de Favorito no topo direito */}
+        {/* Botão de Favorito Discreto no Canto Superior Direito */}
         <button
           onClick={handleToggleFav}
           aria-label={isFav ? 'Remover dos favoritos' : 'Favoritar produto'}
-          className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-md transition-all duration-200 z-10 ${
-            isFav
-              ? 'bg-rose-50 text-rose-600 shadow'
-              : 'bg-white/80 text-slate-600 hover:text-rose-600 hover:bg-white shadow-xs'
-          }`}
+          className="absolute top-2.5 right-2.5 p-1.5 text-neutral-600 hover:text-neutral-950 transition-colors z-10 focus:outline-none"
         >
-          <Heart className={`w-4 h-4 ${isFav ? 'fill-rose-500 text-rose-500' : ''}`} />
+          <Heart
+            className={`w-4 h-4 transition-transform active:scale-125 stroke-[1.5] ${
+              isFav ? 'fill-neutral-950 text-neutral-950' : 'hover:stroke-neutral-950'
+            }`}
+          />
         </button>
 
-        {/* Botão Adicionar Rápido deslizando no rodapé da imagem (desktop) */}
-        <div className="absolute bottom-2.5 inset-x-2.5 hidden sm:block opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-10">
-          <Button
+        {/* Botão Compra Rápida flutuante no Desktop (slide sutil de baixo para cima) */}
+        <div className="absolute inset-x-2.5 bottom-2.5 hidden sm:block opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
+          <button
             onClick={handleQuickAdd}
-            size="sm"
-            className="w-full bg-slate-950/90 hover:bg-slate-950 text-white text-xs font-bold rounded-xl h-9 shadow-lg flex items-center justify-center gap-1.5"
+            className="w-full bg-white/95 hover:bg-white text-neutral-950 text-xs font-semibold py-2.5 uppercase tracking-wider shadow-sm transition-colors"
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Adicionar Rápido</span>
-          </Button>
+            Adicionar Rápido
+          </button>
         </div>
-      </Link>
+      </div>
 
-      {/* Dados do Produto */}
-      <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
+      {/* Grade de Informações com Alto Whitespace e Tipografia Limpa */}
+      <div className="pt-3 pb-1 flex flex-col flex-1 justify-between">
         <div>
-          {/* Marca e Avaliação */}
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 truncate">
-              {product.brand}
-            </span>
-            <div className="flex items-center gap-0.5 text-amber-500 text-[11px] font-bold">
-              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span>{product.rating ? product.rating.toFixed(1) : '4.8'}</span>
-            </div>
-          </div>
+          {/* Marca / Linha */}
+          <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-neutral-400 block mb-0.5">
+            {product.brand}
+          </span>
 
-          {/* Nome */}
+          {/* Nome do Produto */}
           <Link to={`/produto/${product.slug}`} className="block">
-            <h3 className="font-bold text-xs sm:text-sm text-slate-900 line-clamp-2 leading-snug hover:text-emerald-600 transition-colors">
+            <h3 className="text-xs sm:text-[13px] font-normal text-neutral-900 leading-snug line-clamp-1 group-hover:text-neutral-600 transition-colors">
               {product.name}
             </h3>
           </Link>
         </div>
 
-        {/* Preços e Comparação Externa */}
-        <div className="pt-3 border-t border-slate-100 mt-2">
+        {/* Preços e Condições (estilo clean Muv Fit) */}
+        <div className="mt-2 space-y-0.5">
           <div className="flex items-baseline gap-2">
-            <span className="text-base sm:text-lg font-black text-slate-950">
+            <span className="text-sm font-semibold text-neutral-950">
               R$ {product.price.toFixed(2).replace('.', ',')}
             </span>
             {product.compare_at_price && product.compare_at_price > product.price && (
-              <span className="text-xs text-slate-400 line-through">
+              <span className="text-xs text-neutral-400 line-through">
                 R$ {product.compare_at_price.toFixed(2).replace('.', ',')}
               </span>
             )}
           </div>
 
-          <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-            em até <strong>3x de R$ {(product.price / 3).toFixed(2).replace('.', ',')}</strong> sem
+          <div className="text-[11px] text-neutral-500 font-normal">
+            ou até <strong>6x de R$ {(product.price / 6).toFixed(2).replace('.', ',')}</strong> sem
             juros
           </div>
 
-          {/* Fonte Externa Verificada */}
-          {product.external_site && (
-            <div className="mt-2 pt-2 border-t border-dashed border-slate-200 flex items-center justify-between text-[10px] text-slate-500">
-              <span className="truncate">Ref: {product.external_site}</span>
-              {product.external_price && product.external_price > product.price && (
-                <span className="font-bold text-emerald-600 shrink-0">
-                  Economize R${' '}
-                  {(product.external_price - product.price).toFixed(2).replace('.', ',')}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Botão Mobile */}
-          <div className="mt-3 sm:hidden">
-            <Button
-              onClick={handleQuickAdd}
-              size="sm"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-8"
-            >
-              Comprar
-            </Button>
+          <div className="text-[11px] text-neutral-700 font-medium pt-0.5">
+            R$ {pixPrice.toFixed(2).replace('.', ',')} no PIX
           </div>
+        </div>
+
+        {/* Botão Mobile Discreto */}
+        <div className="mt-2.5 sm:hidden">
+          <button
+            onClick={handleQuickAdd}
+            className="w-full bg-neutral-950 hover:bg-neutral-900 text-white text-[11px] font-semibold py-2 uppercase tracking-wider transition-colors"
+          >
+            Adicionar
+          </button>
         </div>
       </div>
     </div>

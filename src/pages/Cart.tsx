@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, ArrowRight, Trash2, Plus, Minus, Tag, ShieldCheck, Truck } from 'lucide-react'
+import { ShoppingBag, ArrowRight, Trash2, Plus, Minus, Tag, ShieldCheck } from 'lucide-react'
 import { useCart } from '@/context/AppContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,12 +26,12 @@ export default function CartPage() {
         setAppliedCoupon({ code: found.code, percent: found.discount_percent })
         toast({
           title: 'Cupom aplicado!',
-          description: `Desconto de ${found.discount_percent}% concedido no seu pedido.`,
+          description: `Desconto de ${found.discount_percent}% aplicado na sua sacola.`,
         })
       } else {
         toast({
           title: 'Cupom inválido',
-          description: 'Código de cupom não encontrado ou expirado.',
+          description: 'Código de cupom não localizado.',
           variant: 'destructive',
         })
       }
@@ -52,21 +52,20 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-xl mx-auto py-24 text-center px-4 space-y-4">
-        <div className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-          <ShoppingBag className="w-10 h-10 stroke-1" />
+      <div className="max-w-md mx-auto py-28 text-center px-4 space-y-4">
+        <div className="w-12 h-12 rounded-full bg-neutral-100 text-neutral-400 flex items-center justify-center mx-auto">
+          <ShoppingBag className="w-6 h-6 stroke-[1.25]" />
         </div>
-        <h1 className="text-2xl font-black text-slate-900 font-serif">
-          Sua sacola de compras está vazia
+        <h1 className="text-xl font-bold uppercase tracking-tight text-neutral-900">
+          Sua sacola está vazia
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
-          Navegue pelas nossas categorias exclusivas de roupas e acessórios fitness e monte seu look
-          para o próximo treino.
+        <p className="text-xs text-neutral-400 max-w-xs mx-auto">
+          Explore nossas peças fitness essenciais e escolha os itens para seu próximo treino.
         </p>
         <div className="pt-2">
           <Link to="/categoria/todas">
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-11 px-8 rounded-xl shadow-sm">
-              Ver Todos os Produtos
+            <Button className="bg-neutral-950 hover:bg-neutral-900 text-white font-medium text-xs rounded-none uppercase tracking-wider px-8 h-11">
+              Ver Coleção
             </Button>
           </Link>
         </div>
@@ -75,92 +74,86 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-950 font-serif">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+      <div className="flex items-end justify-between border-b border-neutral-200/80 pb-4">
+        <h1 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-neutral-950">
           Sacola de Compras ({items.length})
         </h1>
         <button
           onClick={clearCart}
-          className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline"
+          className="text-xs text-neutral-400 hover:text-rose-600 transition-colors uppercase tracking-wider font-medium"
         >
-          Esvaziar sacola
+          Limpar Sacola
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* Tabela de Produtos */}
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Tabela de Produtos Clean */}
+        <div className="lg:col-span-8 space-y-6">
           {items.map((item) => {
             const prod = item.expand?.product
             const price = prod?.price || item.price_at_add || 0
             const name = prod?.name || 'Produto Fitness'
             const brand = prod?.brand || 'FitWear'
             const img =
-              prod?.images_urls?.[0] || 'https://img.usecurling.com/p/300/300?q=fitness%20apparel'
+              prod?.images_urls?.[0] || 'https://img.usecurling.com/p/300/400?q=fitness%20apparel'
 
             return (
               <div
                 key={item.id}
-                className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-neutral-100"
               >
                 <div className="flex items-center gap-4">
                   <img
                     src={img}
                     alt={name}
-                    className="w-20 h-20 object-cover rounded-xl bg-slate-100 shrink-0"
+                    className="w-20 h-24 object-cover bg-neutral-100 shrink-0"
                   />
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-neutral-400 block">
                       {brand}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                    <h3 className="text-xs sm:text-sm font-semibold text-neutral-900 leading-snug">
                       {name}
                     </h3>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
-                      {item.selected_size && (
-                        <span>
-                          Tamanho: <strong>{item.selected_size}</strong>
-                        </span>
-                      )}
-                      {item.selected_color && (
-                        <span>
-                          Cor: <strong>{item.selected_color}</strong>
-                        </span>
-                      )}
+                    <div className="flex items-center gap-2 text-[11px] text-neutral-500 pt-1">
+                      {item.selected_size && <span>Tam: {item.selected_size}</span>}
+                      {item.selected_size && item.selected_color && <span>•</span>}
+                      {item.selected_color && <span>Cor: {item.selected_color}</span>}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                  {/* Seletor de quantidade */}
-                  <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden shadow-xs h-9">
+                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-2 sm:pt-0">
+                  <div className="flex items-center border border-neutral-200 bg-white">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="px-2.5 text-slate-500 hover:bg-slate-200"
+                      className="px-2.5 py-1 text-neutral-500 hover:text-neutral-950"
+                      aria-label="Diminuir"
                     >
-                      <Minus className="w-3.5 h-3.5" />
+                      <Minus className="w-3 h-3" />
                     </button>
-                    <span className="px-3 text-xs font-bold text-slate-800">{item.quantity}</span>
+                    <span className="px-3 text-xs font-medium text-neutral-900">
+                      {item.quantity}
+                    </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="px-2.5 text-slate-500 hover:bg-slate-200"
+                      className="px-2.5 py-1 text-neutral-500 hover:text-neutral-950"
+                      aria-label="Aumentar"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-3 h-3" />
                     </button>
                   </div>
 
-                  {/* Preço e remoção */}
                   <div className="text-right">
-                    <span className="text-sm font-black text-slate-950 block">
+                    <span className="text-xs sm:text-sm font-bold text-neutral-950 block">
                       R$ {(price * item.quantity).toFixed(2).replace('.', ',')}
                     </span>
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="text-[11px] font-semibold text-rose-500 hover:text-rose-700 flex items-center gap-1 mt-0.5"
+                      className="text-[11px] text-neutral-400 hover:text-rose-600 transition-colors mt-0.5"
                     >
-                      <Trash2 className="w-3 h-3" />
-                      <span>Remover</span>
+                      Remover
                     </button>
                   </div>
                 </div>
@@ -169,17 +162,16 @@ export default function CartPage() {
           })}
         </div>
 
-        {/* Resumo do Pedido */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6 sticky top-36">
-          <h2 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3">
-            Resumo da Compra
+        {/* Resumo do Pedido Minimalista */}
+        <div className="lg:col-span-4 bg-neutral-50 p-6 sm:p-8 space-y-6 sticky top-28 border border-neutral-200/60">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-950 border-b border-neutral-200/80 pb-3">
+            Resumo do Pedido
           </h2>
 
           {/* Cupom */}
           <form onSubmit={handleApplyCoupon} className="space-y-2">
-            <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-emerald-600" />
-              Cupom de Desconto:
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 block">
+              Possui Cupom de Desconto?
             </span>
             <div className="flex gap-2">
               <Input
@@ -187,68 +179,66 @@ export default function CartPage() {
                 placeholder="Ex: FITNESS10"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                className="text-xs h-10 uppercase bg-slate-50"
+                className="text-xs h-10 uppercase bg-white border-neutral-300 rounded-none"
               />
               <Button
                 type="submit"
                 disabled={checkingCoupon}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 h-10 rounded-xl"
+                className="bg-neutral-950 hover:bg-neutral-900 text-white font-medium text-xs px-4 h-10 rounded-none uppercase tracking-wider"
               >
                 {checkingCoupon ? '...' : 'Aplicar'}
               </Button>
             </div>
             {appliedCoupon && (
-              <div className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              <p className="text-[11px] text-neutral-900 font-medium">
                 Cupom {appliedCoupon.code} ativado (-{appliedCoupon.percent}%)
-              </div>
+              </p>
             )}
           </form>
 
-          {/* Cálculos */}
-          <div className="space-y-2.5 text-xs border-t border-slate-100 pt-4">
-            <div className="flex justify-between text-slate-600">
-              <span>Subtotal dos itens:</span>
-              <span className="font-semibold text-slate-900">
+          {/* Linhas de totais */}
+          <div className="space-y-2 text-xs border-t border-neutral-200/80 pt-4">
+            <div className="flex justify-between text-neutral-500">
+              <span>Subtotal:</span>
+              <span className="font-medium text-neutral-900">
                 R$ {subtotal.toFixed(2).replace('.', ',')}
               </span>
             </div>
 
             {appliedCoupon && (
-              <div className="flex justify-between text-emerald-600 font-semibold">
+              <div className="flex justify-between text-rose-600 font-medium">
                 <span>Desconto ({appliedCoupon.code}):</span>
                 <span>- R$ {discountAmount.toFixed(2).replace('.', ',')}</span>
               </div>
             )}
 
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-neutral-500">
               <span>Frete:</span>
-              <span className="font-semibold text-emerald-600">
+              <span className="font-medium text-neutral-900">
                 {shipping === 0 ? 'GRÁTIS' : `R$ ${shipping.toFixed(2).replace('.', ',')}`}
               </span>
             </div>
 
-            <div className="flex justify-between text-base font-black text-slate-950 border-t border-slate-200 pt-3">
-              <span>Total a pagar:</span>
-              <span className="text-emerald-600 text-xl">
-                R$ {total.toFixed(2).replace('.', ',')}
-              </span>
+            <div className="flex justify-between text-base font-bold text-neutral-950 border-t border-neutral-200/80 pt-3">
+              <span>Total:</span>
+              <span>R$ {total.toFixed(2).replace('.', ',')}</span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Pagamento em até 12x no cartão de crédito ou à vista com Pix/Boleto.
+            <p className="text-[11px] text-neutral-400 pt-1">
+              Pagamento em até 12x no cartão ou à vista com 5% OFF via Pix.
             </p>
           </div>
 
           <Button
             onClick={() => navigate('/checkout')}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black h-12 rounded-xl text-sm shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2"
+            className="w-full bg-neutral-950 hover:bg-neutral-900 text-white font-semibold h-12 rounded-none text-xs uppercase tracking-wider flex items-center justify-center gap-2"
           >
-            <span>Prosseguir para Checkout</span>
+            <span>Continuar para Checkout</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
 
-          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center pt-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Ambiente 100% criptografado e seguro</span>
+          <div className="flex items-center justify-center gap-2 text-[11px] text-neutral-400 text-center pt-1">
+            <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
+            <span>Pagamento direto e seguro no site</span>
           </div>
         </div>
       </div>
