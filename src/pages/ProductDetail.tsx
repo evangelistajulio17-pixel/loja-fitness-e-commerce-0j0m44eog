@@ -169,8 +169,9 @@ export default function ProductDetail() {
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       const target = e.currentTarget
-                      if (!target.src.includes('img.usecurling.com')) {
-                        target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+                      const fallback = `https://img.usecurling.com/p/600/750?q=${encodeURIComponent(product.category + ' ' + (product.brand || 'fitness'))}&seed=${encodeURIComponent(product.slug || product.name)}-${idx}`
+                      if (target.src !== fallback) {
+                        target.src = fallback
                       }
                     }}
                     className="w-full h-full object-cover"
@@ -188,8 +189,9 @@ export default function ProductDetail() {
               referrerPolicy="no-referrer"
               onError={(e) => {
                 const target = e.currentTarget
-                if (!target.src.includes('img.usecurling.com')) {
-                  target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+                const fallback = `https://img.usecurling.com/p/800/1000?q=${encodeURIComponent(product.category + ' ' + (product.brand || 'fitness'))}&seed=${encodeURIComponent(product.slug || product.name)}`
+                if (target.src !== fallback) {
+                  target.src = fallback
                 }
               }}
               className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"

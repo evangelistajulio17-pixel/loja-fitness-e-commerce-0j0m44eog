@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart } from 'lucide-react'
 import type { Product } from '@/types'
@@ -12,9 +12,19 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem, isFavorite, toggleFavorite } = useCart()
 
-  const defaultImg =
-    product.images_urls?.[0] ||
-    `https://img.usecurling.com/p/500/650?q=${encodeURIComponent(product.category + ' fitness apparel')}&seed=${product.slug}`
+  const [imgSrc, setImgSrc] = useState<string>(() => {
+    return (
+      product.images_urls?.[0] ||
+      `https://img.usecurling.com/p/500/650?q=${encodeURIComponent((product.brand || '') + ' ' + (product.category || 'fitness'))}&seed=${encodeURIComponent(product.slug || product.name)}`
+    )
+  })
+
+  useEffect(() => {
+    setImgSrc(
+      product.images_urls?.[0] ||
+        `https://img.usecurling.com/p/500/650?q=${encodeURIComponent((product.brand || '') + ' ' + (product.category || 'fitness'))}&seed=${encodeURIComponent(product.slug || product.name)}`,
+    )
+  }, [product.id, product.images_urls, product.slug, product.brand, product.category, product.name])
 
   const discountPercent =
     product.compare_at_price && product.compare_at_price > product.price
@@ -46,14 +56,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-neutral-100 rounded-none">
         <Link to={`/produto/${product.slug}`} className="block w-full h-full">
           <img
-            src={defaultImg}
+            src={imgSrc}
             alt={product.name}
             referrerPolicy="no-referrer"
-            onError={(e) => {
-              // fallback se a imagem quebrar
-              const target = e.currentTarget
-              if (!target.src.includes('img.usecurling.com')) {
-                target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+            onError={() => {
+              // Em caso de falha de carregamento da imagem remota, utiliza seed exclusivo por produto (nunca repetido)
+              const fallback = `https://img.usecurling.com/p/500/650?q=${encodeURIComponent((product.brand || '') + ' ' + (product.category || 'fitness'))}&seed=${encodeURIComponent(product.slug || product.name)}`
+              if (imgSrc !== fallback) {
+                setImgSrc(fallback)
               }
             }}
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
