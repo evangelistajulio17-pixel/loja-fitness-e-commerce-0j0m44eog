@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter, BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, CartProvider } from '@/context/AppContext'
 import Layout from '@/components/Layout'
 import Index from '@/pages/Index'
@@ -18,9 +18,22 @@ import AdminDashboard from '@/pages/Admin'
 import NotFound from '@/pages/NotFound'
 import { Toaster } from '@/components/ui/toaster'
 
+// Se estiver rodando como arquivo estático, Live Server com index.html na URL ou subpasta sem reescrita de rotas,
+// o HashRouter ou basename dinâmico garante que nenhuma rota quebre e a tela não fique em branco.
+const isStaticOrFile =
+  typeof window !== 'undefined' &&
+  (window.location.protocol === 'file:' ||
+    window.location.pathname.endsWith('.html') ||
+    window.location.port === '5500' ||
+    window.location.port === '5501' ||
+    window.location.port === '5502' ||
+    window.location.pathname.includes('/dist/'))
+
+const RouterComponent = isStaticOrFile ? HashRouter : BrowserRouter
+
 export default function App() {
   return (
-    <Router>
+    <RouterComponent>
       <AuthProvider>
         <CartProvider>
           <Layout>
@@ -45,6 +58,6 @@ export default function App() {
           <Toaster />
         </CartProvider>
       </AuthProvider>
-    </Router>
+    </RouterComponent>
   )
 }

@@ -70,17 +70,52 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   useEffect(() => {
     // Limpeza ativa de qualquer elemento, iframe, badge ou watermark de branding externo
     const cleanBrandElements = () => {
+      // 1. Remoção por seletores CSS abrangentes
       const candidates = document.querySelectorAll(
-        `[id*="skip-badge"], [id*="skip-watermark"], [class*="skip-badge"], [class*="skip-watermark"], [class*="goskip"], a[href*="goskip.dev"]`,
+        `[id*="skip-badge"], [id*="skip-watermark"], [class*="skip-badge"], [class*="skip-watermark"], [class*="goskip"], a[href*="goskip.dev"], a[href*="skip.it"], [data-skip-badge], [data-skip-watermark], [data-skip-branding], #skip-badge, .skip-badge, .skip-watermark, .goskip-badge`,
       )
       candidates.forEach((el) => {
         el.remove()
+      })
+
+      // 2. Remoção por varredura de nós fora do #root que contenham "Criado com o Skip" ou link goskip
+      const bodyChildren = document.body.children
+      for (let i = 0; i < bodyChildren.length; i++) {
+        const child = bodyChildren[i] as HTMLElement
+        if (child && child.id !== 'root') {
+          const text = (child.textContent || '').trim()
+          if (
+            text.includes('Criado com o Skip') ||
+            text.includes('Criado com Skip') ||
+            text.includes('goskip') ||
+            child.querySelector('a[href*="goskip.dev"]') ||
+            child.querySelector('a[href*="skip.it"]')
+          ) {
+            child.remove()
+          }
+        }
+      }
+
+      // 3. Qualquer elemento no DOM que contenha o texto exato ou parcial do badge
+      const allMatches = document.querySelectorAll('div, a, span, button, p')
+      allMatches.forEach((el) => {
+        if (!el.closest('#root')) {
+          const text = (el.textContent || '').trim()
+          if (
+            text === 'Criado com o Skip' ||
+            text === 'Skip' ||
+            text.includes('Criado com o Skip')
+          ) {
+            const container = el.closest('div') || el
+            container.remove()
+          }
+        }
       })
     }
 
     cleanBrandElements()
     const observer = new MutationObserver(() => cleanBrandElements())
-    observer.observe(document.body, { childList: true, subtree: true })
+    observer.observe(document.documentElement, { childList: true, subtree: true })
 
     const consent = localStorage.getItem('fitwear_cookies_consent')
     if (!consent) {

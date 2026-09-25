@@ -132,14 +132,27 @@
   [class*='skip-badge'],
   [class*='skip-watermark'],
   [class*='goskip-badge'],
+  [class*='goskip'],
   [class*='skip-branding'],
   #skip-badge,
   .skip-badge,
-  .skip-watermark {
+  .skip-watermark,
+  a[href*='goskip.dev'],
+  a[href*='skip.it'] {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* Qualquer container flutuante no canto inferior direito que não seja do app */
+  body > div:not(#root):not([data-radix-portal]) {
+    display: none !important;
   }
 }
 

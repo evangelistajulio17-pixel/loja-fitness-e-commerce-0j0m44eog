@@ -8,7 +8,61 @@
     <title>FitWear Store Brasil - Roupas Fitness e Academia</title>
     <meta name="description" content="FitWear Store Brasil - Loja oficial de roupas fitness, treino, corrida e moda academia de alta performance." />
     <meta name="author" content="FitWear Store Brasil" />
-    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image" content="./og-image.png" />
+    <script>
+      /* Suporte a carregamento relativo em servidores estáticos locais (ex: Live Server http://127.0.0.1:5500/dist/ ou http://127.0.0.1:5500/index.html) */
+      (function() {
+        if (!document.querySelector('base')) {
+          var baseTag = document.createElement('base');
+          baseTag.href = './';
+          document.head.insertBefore(baseTag, document.head.firstChild);
+        }
+      })();
+    </script>
+    <script>
+      /* Anti-branding protection & sanitization */
+      (function() {
+        function purgeSkipElements() {
+          try {
+            // 1. Elementos por seletores comuns
+            var targets = document.querySelectorAll(
+              '[id*="skip"], [class*="skip"], [class*="goskip"], [data-skip], a[href*="goskip.dev"], a[href*="skip.it"]'
+            );
+            for (var i = 0; i < targets.length; i++) {
+              var el = targets[i];
+              if (el && el.id !== 'root' && !el.closest('#root')) {
+                el.remove();
+              }
+            }
+            // 2. Elementos pelo texto "Criado com o Skip" ou variações
+            var allElements = document.querySelectorAll('div, a, span, button, p, section, footer, aside');
+            for (var j = 0; j < allElements.length; j++) {
+              var node = allElements[j];
+              if (node && node.id !== 'root' && !node.closest('#root')) {
+                var txt = (node.textContent || '').trim();
+                if (
+                  txt.indexOf('Criado com o Skip') !== -1 ||
+                  txt.indexOf('Criado com Skip') !== -1 ||
+                  txt.indexOf('goskip.dev') !== -1 ||
+                  txt === 'Skip' ||
+                  (txt.indexOf('Criado com o') !== -1 && txt.indexOf('Skip') !== -1)
+                ) {
+                  node.remove();
+                }
+              }
+            }
+          } catch(e) {}
+        }
+
+        purgeSkipElements();
+        if (typeof MutationObserver !== 'undefined') {
+          var initialObserver = new MutationObserver(function() {
+            purgeSkipElements();
+          });
+          initialObserver.observe(document.documentElement, { childList: true, subtree: true });
+        }
+      })();
+    </script>
   </head>
 
   <body>
