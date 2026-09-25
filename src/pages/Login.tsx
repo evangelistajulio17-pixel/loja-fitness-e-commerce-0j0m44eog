@@ -105,7 +105,7 @@ export default function Login() {
             onClick={handleQuickAdmin}
             className="w-full text-center text-[11px] text-slate-500 hover:text-emerald-700 bg-slate-50 hover:bg-slate-100 p-2 rounded-lg border border-slate-200 transition-colors"
           >
-            Preencher credenciais do Administrador (Skip@Pass)
+            Preencher credenciais de demonstração do Administrador
           </button>
         </div>
 

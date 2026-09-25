@@ -68,10 +68,26 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
+    // Limpeza ativa de qualquer elemento, iframe, badge ou watermark de branding externo
+    const cleanBrandElements = () => {
+      const candidates = document.querySelectorAll(
+        `[id*="skip-badge"], [id*="skip-watermark"], [class*="skip-badge"], [class*="skip-watermark"], [class*="goskip"], a[href*="goskip.dev"]`,
+      )
+      candidates.forEach((el) => {
+        el.remove()
+      })
+    }
+
+    cleanBrandElements()
+    const observer = new MutationObserver(() => cleanBrandElements())
+    observer.observe(document.body, { childList: true, subtree: true })
+
     const consent = localStorage.getItem('fitwear_cookies_consent')
     if (!consent) {
       setCookiesAccepted(false)
     }
+
+    return () => observer.disconnect()
   }, [])
 
   const handleAcceptCookies = () => {

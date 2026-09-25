@@ -122,6 +122,25 @@
     padding: 0 !important;
     margin: 0 !important;
   }
+
+  /* Remove qualquer marca d'água, badge, selo flutuante ou overlay de branding de plataforma */
+  [data-skip-badge],
+  [data-skip-watermark],
+  [data-skip-branding],
+  [id*='skip-badge'],
+  [id*='skip-watermark'],
+  [class*='skip-badge'],
+  [class*='skip-watermark'],
+  [class*='goskip-badge'],
+  [class*='skip-branding'],
+  #skip-badge,
+  .skip-badge,
+  .skip-watermark {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 }
 
 @layer utilities {

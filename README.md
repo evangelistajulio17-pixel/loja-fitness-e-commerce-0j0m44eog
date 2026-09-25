@@ -1,6 +1,6 @@
-# Projeto Criado com o Skip
+# FitWear Store Brasil
 
-Este projeto foi criado de ponta a ponta com o [Skip](https://goskip.dev).
+Loja virtual moderna de moda fitness e alta performance.
 
 ## 🚀 Stack Tecnológica
 
