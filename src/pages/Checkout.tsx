@@ -451,9 +451,19 @@ export default function CheckoutPage() {
               {items.map((i) => (
                 <div key={i.id} className="flex gap-3">
                   <img
-                    src={i.expand?.product?.images_urls?.[0]}
+                    src={
+                      i.expand?.product?.images_urls?.[0] ||
+                      'https://img.usecurling.com/p/100/100?q=fitness'
+                    }
                     alt={i.expand?.product?.name}
-                    className="w-12 h-14 object-cover bg-neutral-200 shrink-0"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.src.includes('img.usecurling.com')) {
+                        target.src = `https://img.usecurling.com/p/100/100?q=fitness`
+                      }
+                    }}
+                    className="w-14 h-18 object-cover bg-neutral-100 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-neutral-900 truncate">

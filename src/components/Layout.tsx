@@ -505,6 +505,13 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
                     <img
                       src={img}
                       alt={name}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget
+                        if (!target.src.includes('img.usecurling.com')) {
+                          target.src = `https://img.usecurling.com/p/300/300?q=fitness%20apparel`
+                        }
+                      }}
                       className="w-20 h-24 object-cover bg-neutral-100 shrink-0 rounded-sm"
                     />
                     <div className="flex-1 flex flex-col justify-between min-w-0">

@@ -544,6 +544,13 @@ export default function AdminDashboard() {
                         <img
                           src={prod.images_urls?.[0]}
                           alt={prod.name}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const target = e.currentTarget
+                            if (!target.src.includes('img.usecurling.com')) {
+                              target.src = `https://img.usecurling.com/p/100/100?q=fitness`
+                            }
+                          }}
                           className="w-10 h-10 object-cover rounded-lg bg-slate-100 shrink-0"
                         />
                         <div className="max-w-[200px] truncate">

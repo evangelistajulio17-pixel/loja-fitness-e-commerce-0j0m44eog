@@ -107,6 +107,13 @@ export default function CartPage() {
                   <img
                     src={img}
                     alt={name}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.src.includes('img.usecurling.com')) {
+                        target.src = `https://img.usecurling.com/p/100/100?q=fitness`
+                      }
+                    }}
                     className="w-20 h-24 object-cover bg-neutral-100 shrink-0"
                   />
                   <div className="space-y-0.5">

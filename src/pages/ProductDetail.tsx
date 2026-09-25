@@ -165,9 +165,16 @@ export default function ProductDetail() {
                 >
                   <img
                     src={img}
-                    alt={`Miniatura ${idx + 1}`}
+                    alt={`${product.name} miniatura ${idx + 1}`}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.src.includes('img.usecurling.com')) {
+                        target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+                      }
+                    }}
                     className="w-full h-full object-cover"
-                  />
+                  />{' '}
                 </button>
               ))}
             </div>
@@ -178,6 +185,13 @@ export default function ProductDetail() {
             <img
               src={images[selectedImageIdx] || images[0]}
               alt={product.name}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget
+                if (!target.src.includes('img.usecurling.com')) {
+                  target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+                }
+              }}
               className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
@@ -236,22 +250,29 @@ export default function ProductDetail() {
               R$ {pixPrice.toFixed(2).replace('.', ',')} à vista com 5% de desconto no Pix
             </p>
 
-            {/* Comparação com site externo de referência (recurso preservado de forma clean) */}
+            {/* Comparação com site externo de referência / Modelo Vitrine Verificado */}
             {product.external_site && (
-              <div className="pt-3 mt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-500">
-                <span>
-                  Referência de mercado: <strong>{product.external_site}</strong>
-                </span>
-                {product.external_url && (
-                  <a
-                    href={product.external_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-neutral-700 hover:text-neutral-950 font-medium"
-                  >
-                    <span>Fonte</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+              <div className="pt-3 mt-3 border-t border-neutral-100 flex flex-col gap-1 text-[11px] text-neutral-500">
+                <div className="flex items-center justify-between">
+                  <span>
+                    Loja de referência: <strong>{product.external_site}</strong>
+                  </span>
+                  {product.external_url && (
+                    <a
+                      href={product.external_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-neutral-800 hover:text-neutral-950 font-semibold underline underline-offset-2"
+                    >
+                      <span>Ver na Loja Oficial</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+                {product.price_verified_at && (
+                  <span className="text-[10px] text-neutral-400">
+                    Preço e disponibilidade verificados em: {product.price_verified_at}
+                  </span>
                 )}
               </div>
             )}

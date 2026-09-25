@@ -48,7 +48,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <img
             src={defaultImg}
             alt={product.name}
-            className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              // fallback se a imagem quebrar
+              const target = e.currentTarget
+              if (!target.src.includes('img.usecurling.com')) {
+                target.src = `https://img.usecurling.com/p/600/600?q=fitness%20apparel&color=black`
+              }
+            }}
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         </Link>

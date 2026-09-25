@@ -188,6 +188,13 @@ export default function MyAccount() {
                             <img
                               src={item.image}
                               alt={item.name}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => {
+                                const target = e.currentTarget
+                                if (!target.src.includes('img.usecurling.com')) {
+                                  target.src = `https://img.usecurling.com/p/100/100?q=fitness`
+                                }
+                              }}
                               className="w-10 h-12 object-cover bg-neutral-200"
                             />
                           )}
