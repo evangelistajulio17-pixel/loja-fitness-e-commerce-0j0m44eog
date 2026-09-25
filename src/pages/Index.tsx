@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Truck, RotateCcw, CreditCard, ShieldCheck, Check } from 'lucide-react'
-import { getProducts, getCategories } from '@/services/products'
+import { getProducts, getCategories, getBrands } from '@/services/products'
 import type { Product, Category } from '@/types'
 import { ProductCard } from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
@@ -44,6 +44,7 @@ export default function Index() {
   const [saleProducts, setSaleProducts] = useState<Product[]>([])
   const [newestProducts, setNewestProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [brands, setBrands] = useState<string[]>([])
   const [activeSlide, setActiveSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -54,17 +55,19 @@ export default function Index() {
     async function loadData() {
       try {
         setLoading(true)
-        const [featuredRes, saleRes, newestRes, catList] = await Promise.all([
+        const [featuredRes, saleRes, newestRes, catList, brandList] = await Promise.all([
           getProducts({ isFeatured: true, perPage: 8 }),
           getProducts({ isOnSale: true, perPage: 8 }),
           getProducts({ sort: 'newest', perPage: 8 }),
           getCategories(),
+          getBrands(),
         ])
 
         setFeaturedProducts(featuredRes.items)
         setSaleProducts(saleRes.items)
         setNewestProducts(newestRes.items)
         setCategories(catList)
+        setBrands(brandList)
       } catch (err) {
         console.error('Error loading home data:', err)
       } finally {
@@ -232,6 +235,46 @@ export default function Index() {
               </div>
               <span className="text-[11px] font-medium uppercase tracking-wider text-neutral-800 group-hover:text-neutral-950 transition-colors">
                 {cat.display_name}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* 3.1 MARCAS PARCEIRAS AUTÊNTICAS (Derivadas dinamicamente do banco) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="flex items-end justify-between border-b border-neutral-200/70 pb-4">
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400 block mb-1">
+              Curadoria Nacional
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 uppercase">
+              Marcas Oficiais
+            </h2>
+          </div>
+          <Link
+            to="/categoria/todas"
+            className="text-xs font-medium text-neutral-600 hover:text-neutral-950 transition-colors uppercase tracking-wider flex items-center gap-1"
+          >
+            Ver Catálogo <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {brands.map((brandName) => (
+            <Link
+              key={brandName}
+              to={`/categoria/todas?marca=${encodeURIComponent(brandName)}`}
+              className="group p-4 bg-white border border-neutral-200/80 hover:border-neutral-950 transition-all flex flex-col justify-between min-h-[96px]"
+            >
+              <div className="flex items-start justify-between">
+                <span className="text-[11px] font-bold text-neutral-950 uppercase tracking-wider group-hover:underline">
+                  {brandName}
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-950 group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
+                Ver Coleção
               </span>
             </Link>
           ))}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { SlidersHorizontal, Check } from 'lucide-react'
-import { getProducts, getCategories } from '@/services/products'
+import { getProducts, getCategories, getBrands } from '@/services/products'
 import type { Product, Category } from '@/types'
 import { ProductCard } from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
@@ -14,25 +14,14 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-const BRANDS = [
-  'Growth Apparel',
-  'IntegralMédica',
-  'Max Titanium',
-  'Oxer',
-  'Calf Expert',
-  'Live!',
-  'RVCA Sport',
-  'Viko Sports',
-  'Dentro Sports',
-  'Morrison Iron',
-]
-
 export default function Catalog() {
   const { categoria } = useParams<{ categoria: string }>()
+  const [searchParams, setSearchParams] = useSearchParams()
   const activeCategory = categoria || 'todas'
 
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [brands, setBrands] = useState<string[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -40,7 +29,8 @@ export default function Catalog() {
   const [totalPages, setTotalPages] = useState(1)
 
   // Filters
-  const [selectedBrand, setSelectedBrand] = useState<string>('')
+  const brandParam = searchParams.get('marca') || ''
+  const [selectedBrand, setSelectedBrand] = useState<string>(brandParam)
   const [onlySale, setOnlySale] = useState(false)
   const [sortOption, setSortOption] = useState('newest')
   const [maxPrice, setMaxPrice] = useState<number>(2000)
@@ -51,7 +41,26 @@ export default function Catalog() {
 
   useEffect(() => {
     getCategories().then(setCategories)
+    getBrands().then(setBrands)
   }, [])
+
+  // Sincroniza se a URL mudar (ex: navegação externa ou clique em link de marca)
+  useEffect(() => {
+    const brandInUrl = searchParams.get('marca') || ''
+    setSelectedBrand(brandInUrl)
+  }, [searchParams])
+
+  const handleBrandSelect = (brand: string) => {
+    const nextBrand = brand === selectedBrand ? '' : brand
+    setSelectedBrand(nextBrand)
+    const newParams = new URLSearchParams(searchParams)
+    if (nextBrand) {
+      newParams.set('marca', nextBrand)
+    } else {
+      newParams.delete('marca')
+    }
+    setSearchParams(newParams, { replace: true })
+  }
 
   // Discover actual price range in catalog to adjust slider dynamically while respecting 2000 limit
   useEffect(() => {
@@ -125,6 +134,9 @@ export default function Catalog() {
   const clearFilters = () => {
     setSelectedBrand('')
     setOnlySale(false)
+    const newParams = new URLSearchParams(searchParams)
+    newParams.delete('marca')
+    setSearchParams(newParams, { replace: true })
     setMaxPrice(maxPriceBound)
     setSortOption('newest')
   }
@@ -165,20 +177,25 @@ export default function Catalog() {
             <span>Todas as Marcas</span>
             {!selectedBrand && <Check className="w-3.5 h-3.5" />}
           </button>
-          {BRANDS.map((brand) => (
-            <button
-              key={brand}
-              onClick={() => setSelectedBrand(brand === selectedBrand ? '' : brand)}
-              className={`w-full text-left py-1.5 px-2 text-xs flex items-center justify-between transition-colors ${
-                selectedBrand === brand
-                  ? 'font-bold text-neutral-950 bg-neutral-100'
-                  : 'text-neutral-500 hover:text-neutral-950'
-              }`}
-            >
-              <span>{brand}</span>
-              {selectedBrand === brand && <Check className="w-3.5 h-3.5" />}
-            </button>
-          ))}
+          {brands.map((brand) => {
+            const isSelected =
+              selectedBrand.localeCompare(brand, 'pt-BR', { sensitivity: 'base' }) === 0 ||
+              selectedBrand.toLowerCase() === brand.toLowerCase()
+            return (
+              <button
+                key={brand}
+                onClick={() => handleBrandSelect(brand)}
+                className={`w-full text-left py-1.5 px-2 text-xs flex items-center justify-between transition-colors ${
+                  isSelected
+                    ? 'font-bold text-neutral-950 bg-neutral-100'
+                    : 'text-neutral-500 hover:text-neutral-950'
+                }`}
+              >
+                <span>{brand}</span>
+                {isSelected && <Check className="w-3.5 h-3.5" />}
+              </button>
+            )
+          })}
         </div>
       </div>
 

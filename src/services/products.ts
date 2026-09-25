@@ -23,7 +23,9 @@ export async function getProducts(options?: {
   }
 
   if (options?.brand) {
-    filters.push(`brand = "${options.brand}"`)
+    // Normalização para casar tanto valores exatos quanto variações (ex: Live! Oficial vs Live!, IntegralMédica Darkness vs IntegralMédica)
+    const cleanBrand = options.brand.trim().replace(/["\\]/g, '')
+    filters.push(`(brand = "${cleanBrand}" || brand ~ "${cleanBrand}")`)
   }
 
   if (options?.isOnSale) {
@@ -118,6 +120,28 @@ export async function getCategories(): Promise<Category[]> {
     return records as unknown as Category[]
   } catch (error) {
     console.error('Error fetching categories:', error)
+    return []
+  }
+}
+
+/**
+ * Obtém dinamicamente a lista de marcas disponíveis no banco PocketBase,
+ * sem valores hardcoded, ordenadas alfabeticamente.
+ */
+export async function getBrands(): Promise<string[]> {
+  try {
+    const records = await pb.collection('products').getFullList({
+      fields: 'brand',
+      sort: 'brand',
+    })
+    const brandSet = new Set<string>()
+    for (const r of records) {
+      const b = (r.brand || '').trim()
+      if (b) brandSet.add(b)
+    }
+    return Array.from(brandSet).sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }))
+  } catch (error) {
+    console.error('Error fetching brands:', error)
     return []
   }
 }
