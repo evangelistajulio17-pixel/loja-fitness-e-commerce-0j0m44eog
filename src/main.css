@@ -151,7 +151,10 @@
   }
 
   /* Qualquer container flutuante no canto inferior direito que não seja do app */
-  body > div:not(#root):not([data-radix-portal]) {
+  body
+    > div:not(#root):not([data-radix-portal]):not([data-state]):not([role='dialog']):not(
+      [role='region']
+    ):not([role='status']):not([data-radix-popper-content-wrapper]) {
     display: none !important;
   }
 }

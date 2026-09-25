@@ -85,6 +85,11 @@ html = html.replace(/<script\s+[^>]*?src=["']([^"']+)["'][^>]*?>\s*<\/script>/gi
   return match
 })
 
+// 4.1 Injeta <base href="./"> se ainda não houver, para suporte a arquivos relativos em file://
+if (!html.includes('<base')) {
+  html = html.replace(/<head[^>]*>/i, (match) => `${match}\n    <base href="./" />`)
+}
+
 // 5. Salva o arquivo gerado
 const outputSingleFilePath = path.join(distDir, 'loja-fitness-local.html')
 fs.writeFileSync(outputSingleFilePath, html, 'utf-8')

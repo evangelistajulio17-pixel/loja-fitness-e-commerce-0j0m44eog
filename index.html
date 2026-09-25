@@ -8,23 +8,7 @@
     <title>FitWear Store Brasil - Roupas Fitness e Academia</title>
     <meta name="description" content="FitWear Store Brasil - Loja oficial de roupas fitness, treino, corrida e moda academia de alta performance." />
     <meta name="author" content="FitWear Store Brasil" />
-    <meta property="og:image" content="./og-image.png" />
-    <script>
-      /* Suporte a carregamento relativo em servidores estáticos locais (ex: Live Server http://127.0.0.1:5500/dist/) e em arquivo local file:// */
-      (function() {
-        if (window.location.protocol === 'file:') {
-          // No protocolo file://, <base href="./"> causa problemas de resolução de hash e rotas em alguns navegadores
-          var existingBase = document.querySelector('base');
-          if (existingBase) {
-            existingBase.remove();
-          }
-        } else if (!document.querySelector('base')) {
-          var baseTag = document.createElement('base');
-          baseTag.href = './';
-          document.head.insertBefore(baseTag, document.head.firstChild);
-        }
-      })();
-    </script>
+    <meta property="og:image" content="/og-image.png" />
     <script>
       /* Detecção amigável caso o usuário abra a pasta fonte não compilada diretamente via file:// */
       (function() {
@@ -44,23 +28,38 @@
     <script>
       /* Anti-branding protection & sanitization */
       (function() {
+        function isRadixOrPortal(element) {
+          if (!element || !element.closest) return false;
+          return !!(
+            element.closest('#root') ||
+            element.closest('[data-radix-portal]') ||
+            element.closest('[data-radix-popper-content-wrapper]') ||
+            element.closest('[role="dialog"]') ||
+            element.closest('[role="region"]') ||
+            element.closest('[role="status"]') ||
+            element.closest('[data-state]') ||
+            element.closest('[class*="radix"]') ||
+            element.closest('ol[tabindex="-1"]')
+          );
+        }
+
         function purgeSkipElements() {
           try {
-            // 1. Elementos por seletores comuns
+            // 1. Elementos por seletores comuns de branding
             var targets = document.querySelectorAll(
-              '[id*="skip"], [class*="skip"], [class*="goskip"], [data-skip], a[href*="goskip.dev"], a[href*="skip.it"]'
+              '[id*="skip-badge"], [id*="skip-watermark"], [class*="skip-badge"], [class*="skip-watermark"], [class*="goskip"], [data-skip-badge], [data-skip-watermark], [data-skip-branding], #skip-badge, .skip-badge, .skip-watermark, a[href*="goskip.dev"], a[href*="skip.it"]'
             );
             for (var i = 0; i < targets.length; i++) {
               var el = targets[i];
-              if (el && el.id !== 'root' && !el.closest('#root')) {
+              if (el && el.id !== 'root' && !isRadixOrPortal(el)) {
                 el.remove();
               }
             }
-            // 2. Elementos pelo texto "Criado com o Skip" ou variações
+            // 2. Elementos pelo texto "Criado com o Skip" ou variações fora de portais legítimos
             var allElements = document.querySelectorAll('div, a, span, button, p, section, footer, aside');
             for (var j = 0; j < allElements.length; j++) {
               var node = allElements[j];
-              if (node && node.id !== 'root' && !node.closest('#root')) {
+              if (node && node.id !== 'root' && !isRadixOrPortal(node)) {
                 var txt = (node.textContent || '').trim();
                 if (
                   txt.indexOf('Criado com o Skip') !== -1 ||

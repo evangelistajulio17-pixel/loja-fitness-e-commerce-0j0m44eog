@@ -69,20 +69,37 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
 
   useEffect(() => {
     // Limpeza ativa de qualquer elemento, iframe, badge ou watermark de branding externo
+    const isRadixOrPortal = (element: Element | null): boolean => {
+      if (!element || !element.closest) return false
+      return !!(
+        element.closest('#root') ||
+        element.closest('[data-radix-portal]') ||
+        element.closest('[data-radix-popper-content-wrapper]') ||
+        element.closest('[role="dialog"]') ||
+        element.closest('[role="region"]') ||
+        element.closest('[role="status"]') ||
+        element.closest('[data-state]') ||
+        element.closest('[class*="radix"]') ||
+        element.closest('ol[tabindex="-1"]')
+      )
+    }
+
     const cleanBrandElements = () => {
-      // 1. Remoção por seletores CSS abrangentes
+      // 1. Remoção por seletores CSS abrangentes de branding
       const candidates = document.querySelectorAll(
         `[id*="skip-badge"], [id*="skip-watermark"], [class*="skip-badge"], [class*="skip-watermark"], [class*="goskip"], a[href*="goskip.dev"], a[href*="skip.it"], [data-skip-badge], [data-skip-watermark], [data-skip-branding], #skip-badge, .skip-badge, .skip-watermark, .goskip-badge`,
       )
       candidates.forEach((el) => {
-        el.remove()
+        if (!isRadixOrPortal(el)) {
+          el.remove()
+        }
       })
 
       // 2. Remoção por varredura de nós fora do #root que contenham "Criado com o Skip" ou link goskip
       const bodyChildren = document.body.children
       for (let i = 0; i < bodyChildren.length; i++) {
         const child = bodyChildren[i] as HTMLElement
-        if (child && child.id !== 'root') {
+        if (child && child.id !== 'root' && !isRadixOrPortal(child)) {
           const text = (child.textContent || '').trim()
           if (
             text.includes('Criado com o Skip') ||
@@ -96,10 +113,10 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         }
       }
 
-      // 3. Qualquer elemento no DOM que contenha o texto exato ou parcial do badge
+      // 3. Qualquer elemento no DOM que contenha o texto exato ou parcial do badge fora de portais legítimos
       const allMatches = document.querySelectorAll('div, a, span, button, p')
       allMatches.forEach((el) => {
-        if (!el.closest('#root')) {
+        if (!isRadixOrPortal(el)) {
           const text = (el.textContent || '').trim()
           if (
             text === 'Criado com o Skip' ||
